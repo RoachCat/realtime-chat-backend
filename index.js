@@ -1,6 +1,6 @@
 const express = require('express');
 const socket = require("socket.io")
-const router = require('./router/routes');
+const router = require('./src/router/routes');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
