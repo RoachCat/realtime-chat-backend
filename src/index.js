@@ -1,48 +1,38 @@
 const express = require('express');
 const socket = require("socket.io")
+const router = require('./router/routes');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
-const server = require('http').Server(app);
-const io = socket(server, {
-    cors: {
-        origin: ["http://127.0.0.1:5500", "http://127.0.0.1:5501"],
-        methods: ["GET", "POST"]
-    }
-})
-// const WebSocketServer = require("websocket").server;
-
-// const wsServer = new WebSocketServer({
-//     httpServer: server,
-//     autoAcceptConnections: false
-// });
+const URL = "192.168.194.67";
+const PORT = 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+router(app);
+
+const server = app.listen(PORT || 3000, () => {
+    console.log(`Servidor iniciado en el puerto http://${URL}:${PORT}`);
+})
+
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+    }
+});
 
 io.on("connection", (socket) => {
-    console.log(`Socket connection made ${socket.id}`);
-    socket.on("chat", function (data) {
-        console.log(data);
-        console.log(`Received: ${data.message} `)
-        if (data.typing === false) {
-            io.sockets.emit("chat", data);
-        }
+    console.log(`Connection established with socket id ${socket.id}`);
+    socket.on("join-room", (data) => {
+        joinToRoom(socket, data);
+    })
+    socket.on("send-message", (data) => {
+        io.in(data.room).emit("get-message", data);
     });
 })
 
-
-// wsServer.on("request", (request) => {
-//     console.log(`Te conectaste ${request.origin}`);
-//     const connection = request.accept(null, request.origin);
-//     connection.on("message", (message) => {
-//         console.log("Mensaje recibido: " + message.utf8Data);
-//         connection.sendUTF(message.utf8Data);
-//     });
-//     connection.on("close", (reasonCode, description) => {
-//         console.log("El cliente se desconecto");
-//     });
-// });
-
-server.listen(3000, () => {
-    console.log('Servidor iniciado en el puerto: http://localhost:3000');
-})
+function joinToRoom(socket, data) {
+    socket.join(data.room);
+    socket.timeout(5000).emit("joined-to-room", { message: "Joined to room", ...data });
+}
