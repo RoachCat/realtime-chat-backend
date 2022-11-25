@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const URL = "192.168.194.67";
 const PORT = process.env.PORT || 5000;
+const db = require('./src/db/mongo');
+db();
 const { initChatSocket } = require("./src/components/chatSockets");
 
 app.use(cors());

@@ -1,21 +1,22 @@
 const Store = require("./store");
 const BuildHistoryLog = require("./historyLog");
 
-function getRoomHistory(params) {
+async function getRoomHistory(params) {
     try {
-        const roomHistory = Store.getRoomHistory(params);
-        return roomHistory;
+        const response = await Store.getRoomHistory(params);
+        return response.history;
     } catch (error) {
         throw new Error(error);
     }
 };
 
-function updateRoomHistory(params, body) {
+async function updateRoomHistory(params, body) {
     try {
         const historyLog = BuildHistoryLog(body);
-        const response = Store.updateRoomHistory(params, historyLog);
+        const response = await Store.updateRoomHistory(params, historyLog);
         return response;
     } catch (error) {
+        console.log(error);
         throw new Error(error);
     }
 }

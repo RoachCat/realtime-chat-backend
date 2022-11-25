@@ -5,8 +5,8 @@ const response = require("../../responses/responses");
 
 router.get("/", async (req, res) => {
     try {
-        const user = controller.getRoomHistory(req.query);
-        return response.success(req, res, user, 201)
+        const history = await controller.getRoomHistory(req.query);
+        return response.success(req, res, history, 201)
     } catch (error) {
         return response.error(req, res, "Error", 500, error)
     }
@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
 
 router.patch("/", async (req, res) => {
     try {
-        const user = controller.updateRoomHistory();
-        return response.success(req, res, user, 201)
+        const update = await controller.updateRoomHistory();
+        return response.success(req, res, update, 201)
     } catch (error) {
         return response.error(req, res, "Error", 500, error)
     }
