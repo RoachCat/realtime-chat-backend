@@ -1,19 +1,26 @@
+const GenerateGUID = require("../../utils/generateGUID")
+const users = [];
+
 function createNewUser(payload) {
     const response = {
         username: payload.username,
-        id: createGUID(),
+        user_id: GenerateGUID()
     }
     return response;
 };
 
-function createGUID() {
-    return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, (c) => {
-        const r = Math.floor(Math.random() * 16);
-        return r.toString(16);
-    });
+function addUser(user) {
+    users.push(user);
+    return user;
+}
+
+function getDisconnectedUser(socket_id) {
+    return users.find((user) => user.socket_id === socket_id);
 }
 
 module.exports = {
-    createNewUser
+    createNewUser,
+    addUser,
+    getDisconnectedUser
 }
 
