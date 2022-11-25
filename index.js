@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 router(app);
 
 const server = app.listen(PORT, () => {
-    console.log(`Servidor iniciado en el puerto http://${URL}:${PORT}`);
+    console.log(`Servidor iniciado en el puerto: http://${URL}:${PORT}`);
 })
 
 initChatSocket(server);
